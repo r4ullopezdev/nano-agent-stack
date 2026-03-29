@@ -1,0 +1,44 @@
+name: content-ops-demo
+provider:
+  kind: static-scenario
+  model: local-scenario-v1
+policy:
+  maxTasksPerRun: 4
+  humanApprovalRequired: false
+  allowSkillFallback: true
+agents:
+  - id: content-manager
+    role: Content Operations Manager
+    department: content-ops
+    skills:
+      - task-classifier
+    instruction: Turn requests into editorial work packets.
+  - id: content-researcher
+    role: Content Researcher
+    department: content-ops
+    skills:
+      - web-research-stub
+    instruction: Gather context, angles, and source caveats.
+  - id: content-writer
+    role: Content Writer
+    department: content-ops
+    skills:
+      - markdown-report-generator
+    instruction: Draft publish-ready markdown assets.
+departments:
+  - id: content-ops
+    label: Content Ops Department
+    manager: content-manager
+    workers:
+      - content-researcher
+      - content-writer
+    routingStrategy: broadcast
+tasks:
+  - id: editorial-brief
+    title: Create an editorial brief for a multi-agent architecture article
+    ownerDepartment: content-ops
+    desiredOutput: Editorial brief with outline and next steps
+    requiredSkills:
+      - web-research-stub
+      - markdown-report-generator
+

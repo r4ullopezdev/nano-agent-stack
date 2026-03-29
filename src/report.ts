@@ -4,7 +4,8 @@ export function renderRunReport(result: RunResult): string {
   const taskLines = result.results
     .map((task) => {
       const workers = task.workerOutputs.map((entry) => `${entry.workerId}:${entry.skillId}`).join(", ");
-      return `- ${task.taskId} | ${task.ownerDepartment} | ${workers}\n  ${task.finalSummary}`;
+      const notes = task.workerOutputs.map((entry) => `${entry.workerId}: ${entry.providerNote}`).join("\n  ");
+      return `- ${task.taskId} | ${task.ownerDepartment} | ${task.provider} | ${workers}\n  Manager: ${task.managerBrief}\n  ${task.finalSummary}\n  ${notes}`;
     })
     .join("\n");
 
@@ -12,4 +13,3 @@ export function renderRunReport(result: RunResult): string {
 
   return `# ${result.workflow}\n\n## Task results\n${taskLines}\n\n## Trace\n${traceLines}\n`;
 }
-

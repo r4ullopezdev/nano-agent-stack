@@ -33,6 +33,12 @@ export type ExecutionPolicy = {
   allowSkillFallback: boolean;
 };
 
+export type ProviderConfig = {
+  kind: "static-scenario" | "echo";
+  model: string;
+  options?: Record<string, unknown>;
+};
+
 export type AgentDefinition = {
   id: string;
   role: string;
@@ -60,6 +66,7 @@ export type WorkflowTask = {
 
 export type RuntimeConfig = {
   name: string;
+  provider: ProviderConfig;
   policy: ExecutionPolicy;
   agents: AgentDefinition[];
   departments: DepartmentDefinition[];
@@ -85,10 +92,13 @@ export type TaskResult = {
   taskId: string;
   ownerDepartment: string;
   manager: string;
+  provider: string;
+  managerBrief: string;
   workerOutputs: Array<{
     workerId: string;
     skillId: string;
     summary: string;
+    providerNote: string;
   }>;
   finalSummary: string;
 };
@@ -98,4 +108,3 @@ export type RunResult = {
   results: TaskResult[];
   trace: TraceEvent[];
 };
-

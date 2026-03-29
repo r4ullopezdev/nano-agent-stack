@@ -8,6 +8,8 @@ Experimental open-source infrastructure for modular, auditable multi-agent orche
 
 `nano-agent-stack` is not another chatbot wrapper. It is a small but real runtime for representing organizations as agent systems: departments, managers, worker agents, registrable skills, execution policy, memory interfaces, trace hooks, and optional human checkpoints.
 
+![NANO Agent Stack overview](./assets/stack-overview.svg)
+
 ## Why this exists
 
 Most agent demos collapse orchestration into hidden prompts and brittle glue code. That makes them hard to reason about, hard to audit, and hard to adapt to real organizational workflows.
@@ -25,8 +27,9 @@ This project takes a different position:
 - central orchestrator with execution policy enforcement
 - department-based task routing
 - agent role definitions with declarative skills
-- pluggable skill registry
+- real dependency on `nano-agent-skills` for the skill registry
 - in-memory state adapter interface
+- explicit provider abstraction for generation backends
 - trace collection for every run
 - optional human approval checkpoints
 - CLI demo for CEO -> department manager -> workers
@@ -52,12 +55,14 @@ More detail lives in [ARCHITECTURE.md](./ARCHITECTURE.md) and [docs/architecture
 ```bash
 npm install
 npm run demo
+npm run demo:content
+npm run demo:support
 ```
 
 Expected result:
 
 - a terminal report of the workflow run
-- a generated artifact at `artifacts/latest-run.md`
+- generated artifacts at `artifacts/latest-run.md` and `artifacts/latest-run.json`
 - a trace showing task routing, skill calls, and approval checkpoints
 
 For a fuller setup path, see [QUICKSTART.md](./QUICKSTART.md).
@@ -77,6 +82,20 @@ Run it explicitly:
 npm run dev -- run examples/ceo-launch.yaml
 ```
 
+Additional examples:
+
+- `examples/content-ops.yaml`
+- `examples/support-triage.yaml`
+
+## Provider abstraction
+
+The runtime now includes a real provider boundary:
+
+- `static-scenario`: deterministic provider for structural demos and tests
+- `echo`: deterministic provider that echoes objective and role context
+
+This keeps the orchestration layer independent from any single model vendor while making the boundary explicit in code today, not as roadmap vapor.
+
 ## Repository layout
 
 ```text
@@ -94,6 +113,10 @@ tests/                Basic runtime tests
 - It separates policies, memory, skills, and routing instead of fusing them into a single agent abstraction.
 - It is designed to sit underneath different model providers and specialized skill packages.
 
+## Comparison
+
+For a neutral positioning note against related frameworks, see [docs/framework-comparison.md](./docs/framework-comparison.md).
+
 ## Ecosystem
 
 - `nano-agent-stack`: core orchestrator runtime
@@ -101,6 +124,7 @@ tests/                Basic runtime tests
 - `nano-agent-templates`: workflow templates and prompt contracts
 - `nano-agent-observability`: tracing, logging, and run exports
 - `nano-agent-docs`: deeper adoption and design documentation
+- `nano-agent-bench`: small, honest workflow-structure benchmarks
 
 ## Status
 
@@ -113,4 +137,3 @@ Apache-2.0. The ecosystem is intended to be permissive for builders while preser
 ## Roadmap
 
 See [ROADMAP.md](./ROADMAP.md) for the staged path from core runtime to broader public beta.
-

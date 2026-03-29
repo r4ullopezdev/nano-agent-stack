@@ -1,5 +1,5 @@
 import { RunTracer } from "../observability/tracer.js";
-import type { SkillRegistry } from "../skills/registry.js";
+import type { GenerationProvider } from "../providers/provider.js";
 import type {
   AgentDefinition,
   DepartmentDefinition,
@@ -9,11 +9,13 @@ import type {
   TaskResult,
   WorkflowTask
 } from "../types.js";
+import type { SkillRegistry } from "nano-agent-skills";
 
 type RuntimeDependencies = {
   config: RuntimeConfig;
   skills: SkillRegistry;
   memory: MemoryAdapter;
+  provider: GenerationProvider;
 };
 
 export class Orchestrator {
@@ -72,12 +74,25 @@ export class Orchestrator {
   private async executeTask(task: WorkflowTask): Promise<TaskResult> {
     const department = this.getDepartment(task.ownerDepartment);
     const manager = this.getAgent(department.manager);
+    const managerContext = {
+      desiredOutput: task.desiredOutput,
+      ownerDepartment: department.label,
+      managerInstruction: manager.instruction
+    };
+    const managerBrief = await this.deps.provider.generate({
+      agentId: manager.id,
+      role: manager.role,
+      task: task.title,
+      objective: "Plan work decomposition and route execution.",
+      context: managerContext
+    });
 
     this.tracer.record({
       type: "task.started",
       actor: manager.id,
       taskId: task.id,
-      detail: `Manager '${manager.role}' accepted task '${task.title}'.`
+      detail: `Manager '${manager.role}' accepted task '${task.title}'.`,
+      payload: { provider: this.deps.provider.id }
     });
 
     if (task.checkpoint && this.deps.config.policy.humanApprovalRequired) {
@@ -119,16 +134,26 @@ export class Orchestrator {
         sections: ["Context", "Delivery plan", "Approval notes"]
       };
 
-      const result = await this.deps.skills.invoke(skillId, task.title, context);
+      const result = await this.deps.skills.run(skillId, task.title, context);
+      const providerNote = await this.deps.provider.generate({
+        agentId: worker.id,
+        role: worker.role,
+        task: task.title,
+        objective: `Contribute ${task.desiredOutput} using ${skillId}.`,
+        context
+      });
+
       workerOutputs.push({
         workerId: worker.id,
         skillId,
-        summary: result.summary
+        summary: result.summary,
+        providerNote: providerNote.content
       });
     }
 
     const finalSummary = [
       `${department.label} coordinated by ${manager.role}.`,
+      managerBrief.content,
       ...workerOutputs.map((output) => `${output.workerId} used ${output.skillId}.`),
       `Delivery target: ${task.desiredOutput}.`
     ].join(" ");
@@ -151,6 +176,8 @@ export class Orchestrator {
       taskId: task.id,
       ownerDepartment: task.ownerDepartment,
       manager: manager.id,
+      provider: this.deps.provider.model,
+      managerBrief: managerBrief.content,
       workerOutputs,
       finalSummary
     };

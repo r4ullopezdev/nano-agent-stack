@@ -1,0 +1,44 @@
+name: support-triage-demo
+provider:
+  kind: echo
+  model: deterministic-echo-v1
+policy:
+  maxTasksPerRun: 3
+  humanApprovalRequired: true
+  allowSkillFallback: true
+agents:
+  - id: support-manager
+    role: Support Triage Manager
+    department: support
+    skills:
+      - task-classifier
+    instruction: Route inbound issues based on urgency and ownership.
+  - id: classifier
+    role: Support Classifier
+    department: support
+    skills:
+      - task-classifier
+    instruction: Label issue class and priority.
+  - id: formatter
+    role: Handoff Formatter
+    department: support
+    skills:
+      - structured-output-formatter
+    instruction: Package the triage output for the next team.
+departments:
+  - id: support
+    label: Support Department
+    manager: support-manager
+    workers:
+      - classifier
+      - formatter
+    routingStrategy: broadcast
+tasks:
+  - id: support-batch
+    title: Triage a high-priority support queue
+    ownerDepartment: support
+    desiredOutput: Structured triage report with escalation notes
+    requiredSkills:
+      - task-classifier
+      - structured-output-formatter
+    checkpoint: Human review required before customer-facing response

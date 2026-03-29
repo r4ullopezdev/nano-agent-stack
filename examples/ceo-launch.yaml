@@ -1,4 +1,7 @@
 name: ceo-launch-demo
+provider:
+  kind: static-scenario
+  model: local-scenario-v1
 policy:
   maxTasksPerRun: 5
   humanApprovalRequired: true
@@ -20,13 +23,13 @@ agents:
     role: Market Research Worker
     department: research
     skills:
-      - research-brief
+      - web-research-stub
     instruction: Produce fast technical market context.
   - id: report-writer
     role: Report Writer
     department: research
     skills:
-      - markdown-report
+      - markdown-report-generator
     instruction: Turn findings into crisp markdown deliverables.
 departments:
   - id: research
@@ -42,7 +45,7 @@ tasks:
     ownerDepartment: research
     desiredOutput: Executive markdown brief with risks and next steps
     requiredSkills:
-      - research-brief
-      - markdown-report
+      - web-research-stub
+      - markdown-report-generator
     checkpoint: CEO approval required before external publication
 

@@ -1,0 +1,36 @@
+<svg width="1200" height="680" viewBox="0 0 1200 680" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="680" rx="28" fill="#F3EFE7"/>
+  <rect x="46" y="44" width="1108" height="592" rx="24" fill="#FFFDF8" stroke="#D6CFC2" stroke-width="2"/>
+  <text x="80" y="104" fill="#1F2722" font-size="34" font-family="Segoe UI, sans-serif" font-weight="700">NANO Agent Stack</text>
+  <text x="80" y="140" fill="#5F6C63" font-size="18" font-family="Segoe UI, sans-serif">A modular runtime for departments, agents, skills, policies, memory, and traceable execution.</text>
+  <rect x="78" y="182" width="240" height="108" rx="18" fill="#F7F1E4" stroke="#D6CFC2"/>
+  <text x="102" y="224" fill="#0C6B58" font-size="16" font-family="Segoe UI, sans-serif" font-weight="700">Workflow Config</text>
+  <text x="102" y="252" fill="#1F2722" font-size="14" font-family="Segoe UI, sans-serif">Departments, policies, tasks,</text>
+  <text x="102" y="274" fill="#1F2722" font-size="14" font-family="Segoe UI, sans-serif">provider, checkpoints.</text>
+  <rect x="392" y="170" width="300" height="142" rx="20" fill="#DFF3EC" stroke="#9CCFBF"/>
+  <text x="424" y="220" fill="#0C6B58" font-size="18" font-family="Segoe UI, sans-serif" font-weight="700">Orchestrator Core</text>
+  <text x="424" y="248" fill="#1F2722" font-size="14" font-family="Segoe UI, sans-serif">Routes tasks to departments,</text>
+  <text x="424" y="270" fill="#1F2722" font-size="14" font-family="Segoe UI, sans-serif">enforces policy, emits traces.</text>
+  <rect x="768" y="182" width="308" height="108" rx="18" fill="#F8E8D0" stroke="#D8C19A"/>
+  <text x="794" y="224" fill="#8B5E12" font-size="16" font-family="Segoe UI, sans-serif" font-weight="700">Generation Provider</text>
+  <text x="794" y="252" fill="#1F2722" font-size="14" font-family="Segoe UI, sans-serif">Explicit abstraction for planning</text>
+  <text x="794" y="274" fill="#1F2722" font-size="14" font-family="Segoe UI, sans-serif">and worker-side notes.</text>
+  <rect x="140" y="392" width="240" height="128" rx="18" fill="#FFFFFF" stroke="#D6CFC2"/>
+  <text x="164" y="432" fill="#1F2722" font-size="16" font-family="Segoe UI, sans-serif" font-weight="700">Departments &amp; Agents</text>
+  <text x="164" y="460" fill="#5F6C63" font-size="14" font-family="Segoe UI, sans-serif">Managers and workers with</text>
+  <text x="164" y="482" fill="#5F6C63" font-size="14" font-family="Segoe UI, sans-serif">explicit responsibilities.</text>
+  <rect x="480" y="392" width="240" height="128" rx="18" fill="#FFFFFF" stroke="#D6CFC2"/>
+  <text x="506" y="432" fill="#1F2722" font-size="16" font-family="Segoe UI, sans-serif" font-weight="700">nano-agent-skills</text>
+  <text x="506" y="460" fill="#5F6C63" font-size="14" font-family="Segoe UI, sans-serif">External skill registry with</text>
+  <text x="506" y="482" fill="#5F6C63" font-size="14" font-family="Segoe UI, sans-serif">reusable plugin-like capabilities.</text>
+  <rect x="820" y="392" width="240" height="128" rx="18" fill="#FFFFFF" stroke="#D6CFC2"/>
+  <text x="844" y="432" fill="#1F2722" font-size="16" font-family="Segoe UI, sans-serif" font-weight="700">Artifacts &amp; Traces</text>
+  <text x="844" y="460" fill="#5F6C63" font-size="14" font-family="Segoe UI, sans-serif">Markdown report, JSON trace,</text>
+  <text x="844" y="482" fill="#5F6C63" font-size="14" font-family="Segoe UI, sans-serif">approval checkpoints.</text>
+  <path d="M318 236H392" stroke="#0C6B58" stroke-width="4" stroke-linecap="round"/>
+  <path d="M692 236H768" stroke="#0C6B58" stroke-width="4" stroke-linecap="round"/>
+  <path d="M542 312V392" stroke="#0C6B58" stroke-width="4" stroke-linecap="round"/>
+  <path d="M392 454H380" stroke="#0C6B58" stroke-width="4" stroke-linecap="round"/>
+  <path d="M720 454H820" stroke="#0C6B58" stroke-width="4" stroke-linecap="round"/>
+</svg>
+

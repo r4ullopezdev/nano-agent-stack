@@ -11,6 +11,8 @@
     "clean": "rimraf dist coverage",
     "dev": "tsx src/cli.ts",
     "demo": "tsx src/cli.ts run examples/ceo-launch.yaml",
+    "demo:content": "tsx src/cli.ts run examples/content-ops.yaml",
+    "demo:support": "tsx src/cli.ts run examples/support-triage.yaml",
     "lint": "eslint . --ext .ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
@@ -30,7 +32,8 @@
   },
   "dependencies": {
     "chalk": "^5.4.1",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "nano-agent-skills": "file:../nano-agent-skills"
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",
@@ -46,4 +49,3 @@
     "vitest": "^3.1.1"
   }
 }
-

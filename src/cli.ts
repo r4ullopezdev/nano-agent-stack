@@ -2,12 +2,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
+import { demoSkills, SkillRegistry } from "nano-agent-skills";
 import { loadConfig } from "./config.js";
 import { InMemoryAdapter } from "./memory/inMemory.js";
 import { Orchestrator } from "./orchestrator/orchestrator.js";
+import { loadProvider } from "./providers/loadProvider.js";
 import { renderRunReport } from "./report.js";
-import { defaultSkills } from "./skills/defaultSkills.js";
-import { SkillRegistry } from "./skills/registry.js";
 
 async function main(): Promise<void> {
   const [, , command = "run", configPath = "examples/ceo-launch.yaml"] = process.argv;
@@ -18,26 +18,30 @@ async function main(): Promise<void> {
 
   const config = loadConfig(configPath);
   const registry = new SkillRegistry();
-  registry.registerMany(defaultSkills);
+  demoSkills.forEach((skill) => registry.register(skill));
+  const provider = loadProvider(config.provider);
 
   const orchestrator = new Orchestrator({
     config,
     skills: registry,
-    memory: new InMemoryAdapter()
+    memory: new InMemoryAdapter(),
+    provider
   });
 
   const result = await orchestrator.run();
   const report = renderRunReport(result);
   const outputPath = path.resolve("artifacts", "latest-run.md");
+  const tracePath = path.resolve("artifacts", "latest-run.json");
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, report, "utf8");
+  fs.writeFileSync(tracePath, JSON.stringify(result, null, 2), "utf8");
 
   console.log(chalk.cyan(report));
   console.log(chalk.green(`Saved report to ${outputPath}`));
+  console.log(chalk.green(`Saved trace to ${tracePath}`));
 }
 
 main().catch((error) => {
   console.error(chalk.red(error instanceof Error ? error.message : String(error)));
   process.exitCode = 1;
 });
-
