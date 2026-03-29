@@ -33,6 +33,7 @@
   "dependencies": {
     "chalk": "^5.4.1",
     "js-yaml": "^4.1.0",
+    "nano-agent-observability": "file:../nano-agent-observability",
     "nano-agent-skills": "file:../nano-agent-skills"
   },
   "devDependencies": {

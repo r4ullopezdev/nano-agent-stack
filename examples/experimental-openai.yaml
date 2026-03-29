@@ -1,0 +1,39 @@
+name: experimental-openai-demo
+provider:
+  kind: openai-responses
+  model: gpt-4.1-mini
+  options:
+    apiKeyEnv: OPENAI_API_KEY
+policy:
+  maxTasksPerRun: 2
+  humanApprovalRequired: true
+  allowSkillFallback: true
+agents:
+  - id: manager
+    role: Research Manager
+    department: research
+    skills:
+      - task-classifier
+    instruction: Coordinate work and package findings.
+  - id: worker
+    role: Research Worker
+    department: research
+    skills:
+      - web-research-stub
+    instruction: Produce a compact research brief.
+departments:
+  - id: research
+    label: Research Department
+    manager: manager
+    workers:
+      - worker
+    routingStrategy: broadcast
+tasks:
+  - id: openai-provider-smoke
+    title: Produce a short note on auditable agent systems
+    ownerDepartment: research
+    desiredOutput: Short markdown brief
+    requiredSkills:
+      - web-research-stub
+    checkpoint: Human review before publication
+

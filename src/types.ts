@@ -34,7 +34,7 @@ export type ExecutionPolicy = {
 };
 
 export type ProviderConfig = {
-  kind: "static-scenario" | "echo";
+  kind: "static-scenario" | "echo" | "openai-responses" | "anthropic-messages";
   model: string;
   options?: Record<string, unknown>;
 };

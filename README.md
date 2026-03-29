@@ -62,7 +62,7 @@ npm run demo:support
 Expected result:
 
 - a terminal report of the workflow run
-- generated artifacts at `artifacts/latest-run.md` and `artifacts/latest-run.json`
+- generated artifacts at `artifacts/latest-run.md`, `artifacts/latest-run.json`, `artifacts/latest-trace.md`, and `artifacts/latest-run-inspector.html`
 - a trace showing task routing, skill calls, and approval checkpoints
 
 For a fuller setup path, see [QUICKSTART.md](./QUICKSTART.md).
@@ -86,6 +86,7 @@ Additional examples:
 
 - `examples/content-ops.yaml`
 - `examples/support-triage.yaml`
+- `examples/experimental-openai.yaml`
 
 ## Provider abstraction
 
@@ -95,6 +96,22 @@ The runtime now includes a real provider boundary:
 - `echo`: deterministic provider that echoes objective and role context
 
 This keeps the orchestration layer independent from any single model vendor while making the boundary explicit in code today, not as roadmap vapor.
+
+Experimental remote providers are also available:
+
+- `openai-responses`
+- `anthropic-messages`
+
+These are marked experimental because they require API keys, have not been validated in CI, and are intended as integration seams rather than production-ready provider clients.
+
+## Environment
+
+Copy `.env.example` or export the variables directly before using experimental providers:
+
+```bash
+OPENAI_API_KEY=...
+ANTHROPIC_API_KEY=...
+```
 
 ## Repository layout
 

@@ -16,6 +16,17 @@ npm install
 npm run demo
 ```
 
+## Run additional examples
+
+```bash
+npm run demo:content
+npm run demo:support
+```
+
+## Experimental provider setup
+
+Export `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` before using remote providers. The included `examples/experimental-openai.yaml` shows the expected config shape.
+
 ## Run a custom config
 
 ```bash
@@ -32,5 +43,9 @@ npm run typecheck
 
 ## Expected output
 
-The demo prints a markdown execution report and writes the same content to `artifacts/latest-run.md`.
+The demo prints a markdown execution report and writes:
 
+- `artifacts/latest-run.md`
+- `artifacts/latest-run.json`
+- `artifacts/latest-trace.md`
+- `artifacts/latest-run-inspector.html`
