@@ -1,0 +1,49 @@
+{
+  "name": "nano-agent-stack",
+  "version": "0.1.0",
+  "description": "Experimental open-source infrastructure for modular multi-agent orchestration.",
+  "type": "module",
+  "bin": {
+    "nano-agent-stack": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist coverage",
+    "dev": "tsx src/cli.ts",
+    "demo": "tsx src/cli.ts run examples/ceo-launch.yaml",
+    "lint": "eslint . --ext .ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "agents",
+    "multi-agent",
+    "orchestration",
+    "typescript",
+    "ai-infrastructure",
+    "workflow-runtime"
+  ],
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.24.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.14.1",
+    "eslint": "^9.24.0",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.3",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.29.0",
+    "vitest": "^3.1.1"
+  }
+}
+

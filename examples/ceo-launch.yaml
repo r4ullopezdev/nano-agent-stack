@@ -1,0 +1,48 @@
+name: ceo-launch-demo
+policy:
+  maxTasksPerRun: 5
+  humanApprovalRequired: true
+  allowSkillFallback: true
+agents:
+  - id: ceo
+    role: CEO Agent
+    department: executive
+    skills:
+      - task-classifier
+    instruction: Set direction, enforce policy, approve delivery.
+  - id: research-manager
+    role: Research Department Manager
+    department: research
+    skills:
+      - task-classifier
+    instruction: Break strategy work into research packets and merge findings.
+  - id: market-researcher
+    role: Market Research Worker
+    department: research
+    skills:
+      - research-brief
+    instruction: Produce fast technical market context.
+  - id: report-writer
+    role: Report Writer
+    department: research
+    skills:
+      - markdown-report
+    instruction: Turn findings into crisp markdown deliverables.
+departments:
+  - id: research
+    label: Research Department
+    manager: research-manager
+    workers:
+      - market-researcher
+      - report-writer
+    routingStrategy: broadcast
+tasks:
+  - id: launch-readiness
+    title: Draft launch readiness brief for NANO Agent Stack
+    ownerDepartment: research
+    desiredOutput: Executive markdown brief with risks and next steps
+    requiredSkills:
+      - research-brief
+      - markdown-report
+    checkpoint: CEO approval required before external publication
+
