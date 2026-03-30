@@ -13,6 +13,8 @@
     "demo": "tsx src/cli.ts run examples/ceo-launch.yaml",
     "demo:content": "tsx src/cli.ts run examples/content-ops.yaml",
     "demo:support": "tsx src/cli.ts run examples/support-triage.yaml",
+    "templates": "tsx src/cli.ts templates",
+    "validate:demo": "tsx src/cli.ts validate examples/ceo-launch.yaml",
     "lint": "eslint . --ext .ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
@@ -34,7 +36,9 @@
     "chalk": "^5.4.1",
     "js-yaml": "^4.1.0",
     "nano-agent-observability": "file:../nano-agent-observability",
-    "nano-agent-skills": "file:../nano-agent-skills"
+    "nano-agent-skills": "file:../nano-agent-skills",
+    "nano-agent-templates": "file:../nano-agent-templates",
+    "zod": "^3.24.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",

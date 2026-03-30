@@ -28,7 +28,8 @@ This project takes a different position:
 - department-based task routing
 - agent role definitions with declarative skills
 - real dependency on `nano-agent-skills` for the skill registry
-- in-memory state adapter interface
+- validated workflow configuration loading
+- in-memory and file-backed memory adapters
 - explicit provider abstraction for generation backends
 - trace collection for every run
 - optional human approval checkpoints
@@ -57,6 +58,8 @@ npm install
 npm run demo
 npm run demo:content
 npm run demo:support
+npm run validate:demo
+npm run templates
 ```
 
 Expected result:
@@ -64,6 +67,7 @@ Expected result:
 - a terminal report of the workflow run
 - generated artifacts at `artifacts/latest-run.md`, `artifacts/latest-run.json`, `artifacts/latest-trace.md`, and `artifacts/latest-run-inspector.html`
 - a trace showing task routing, skill calls, and approval checkpoints
+- optional file-backed workflow memory when configured
 
 For a fuller setup path, see [QUICKSTART.md](./QUICKSTART.md).
 
@@ -112,6 +116,25 @@ Copy `.env.example` or export the variables directly before using experimental p
 OPENAI_API_KEY=...
 ANTHROPIC_API_KEY=...
 ```
+
+## Memory adapters
+
+The runtime now supports:
+
+- `in-memory`: default ephemeral state for demos and tests
+- `file`: simple persisted state for local runs and repeatable examples
+
+The `content-ops` example demonstrates file-backed memory.
+
+## Template bridge
+
+`nano-agent-stack` now understands the `nano-agent-templates` package at the CLI level:
+
+```bash
+npm run templates
+```
+
+This keeps templates discoverable from the core runtime without hard-wiring the template content into the orchestrator itself.
 
 ## Repository layout
 

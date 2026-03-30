@@ -27,6 +27,13 @@ export type MemoryAdapter = {
   write(record: MemoryRecord): Promise<void>;
 };
 
+export type MemoryConfig = {
+  kind: "in-memory" | "file";
+  options?: {
+    filePath?: string;
+  };
+};
+
 export type ExecutionPolicy = {
   maxTasksPerRun: number;
   humanApprovalRequired: boolean;
@@ -67,6 +74,7 @@ export type WorkflowTask = {
 export type RuntimeConfig = {
   name: string;
   provider: ProviderConfig;
+  memory?: MemoryConfig;
   policy: ExecutionPolicy;
   agents: AgentDefinition[];
   departments: DepartmentDefinition[];

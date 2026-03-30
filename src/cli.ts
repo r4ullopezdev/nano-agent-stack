@@ -8,8 +8,9 @@ import {
   writeInspector
 } from "nano-agent-observability";
 import { demoSkills, SkillRegistry } from "nano-agent-skills";
+import { catalog } from "nano-agent-templates";
 import { loadConfig } from "./config.js";
-import { InMemoryAdapter } from "./memory/inMemory.js";
+import { loadMemoryAdapter } from "./memory/loadMemoryAdapter.js";
 import { toRunRecord } from "./observability/toRunRecord.js";
 import { Orchestrator } from "./orchestrator/orchestrator.js";
 import { loadProvider } from "./providers/loadProvider.js";
@@ -18,19 +19,34 @@ import { renderRunReport } from "./report.js";
 async function main(): Promise<void> {
   const [, , command = "run", configPath = "examples/ceo-launch.yaml"] = process.argv;
 
+  if (command === "templates") {
+    catalog.forEach((template) => {
+      console.log(chalk.cyan(`${template.id} :: ${template.title}`));
+      console.log(chalk.gray(`  ${template.purpose}`));
+    });
+    return;
+  }
+
+  if (command === "validate") {
+    const config = loadConfig(configPath);
+    console.log(chalk.green(`Validated workflow '${config.name}'.`));
+    return;
+  }
+
   if (command !== "run") {
-    throw new Error(`Unsupported command '${command}'. Use: run <config>.`);
+    throw new Error(`Unsupported command '${command}'. Use: run <config> | validate <config> | templates.`);
   }
 
   const config = loadConfig(configPath);
   const registry = new SkillRegistry();
   demoSkills.forEach((skill) => registry.register(skill));
   const provider = loadProvider(config.provider);
+  const memory = loadMemoryAdapter(config.memory);
 
   const orchestrator = new Orchestrator({
     config,
     skills: registry,
-    memory: new InMemoryAdapter(),
+    memory,
     provider
   });
 

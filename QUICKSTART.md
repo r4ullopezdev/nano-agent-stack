@@ -23,6 +23,18 @@ npm run demo:content
 npm run demo:support
 ```
 
+## Validate a workflow config
+
+```bash
+npm run validate:demo
+```
+
+## List available templates
+
+```bash
+npm run templates
+```
+
 ## Experimental provider setup
 
 Export `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` before using remote providers. The included `examples/experimental-openai.yaml` shows the expected config shape.
@@ -49,3 +61,5 @@ The demo prints a markdown execution report and writes:
 - `artifacts/latest-run.json`
 - `artifacts/latest-trace.md`
 - `artifacts/latest-run-inspector.html`
+
+When file memory is configured, additional persisted state files are written under `artifacts/`.

@@ -2,6 +2,10 @@ name: content-ops-demo
 provider:
   kind: static-scenario
   model: local-scenario-v1
+memory:
+  kind: file
+  options:
+    filePath: artifacts/content-ops-memory.json
 policy:
   maxTasksPerRun: 4
   humanApprovalRequired: false
@@ -41,4 +45,3 @@ tasks:
     requiredSkills:
       - web-research-stub
       - markdown-report-generator
-
