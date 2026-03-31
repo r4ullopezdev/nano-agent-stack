@@ -28,9 +28,11 @@ export type MemoryAdapter = {
 };
 
 export type MemoryConfig = {
-  kind: "in-memory" | "file";
+  kind: "in-memory" | "file" | "sqlite";
   options?: {
     filePath?: string;
+    dbPath?: string;
+    tableName?: string;
   };
 };
 

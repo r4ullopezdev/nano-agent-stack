@@ -29,7 +29,7 @@ This project takes a different position:
 - agent role definitions with declarative skills
 - real dependency on `nano-agent-skills` for the skill registry
 - validated workflow configuration loading
-- in-memory and file-backed memory adapters
+- in-memory, file-backed, and SQLite-backed memory adapters
 - real human approval checkpoints that can gate task execution
 - explicit provider abstraction for generation backends
 - experimental end-to-end providers for OpenAI Responses and Anthropic Messages
@@ -71,7 +71,7 @@ Expected result:
 - a terminal report of the workflow run
 - generated artifacts at `artifacts/latest-run.md`, `artifacts/latest-run.json`, `artifacts/latest-trace.md`, and `artifacts/latest-run-inspector.html`
 - a trace showing task routing, skill calls, and approval decisions
-- optional file-backed workflow memory when configured
+- optional file-backed or SQLite-backed workflow memory when configured
 
 For a fuller setup path, see [QUICKSTART.md](./QUICKSTART.md).
 
@@ -128,8 +128,9 @@ The runtime now supports:
 
 - `in-memory`: default ephemeral state for demos and tests
 - `file`: simple persisted state for local runs and repeatable examples
+- `sqlite`: local durable state for repeatable runs that need stronger persistence than a JSON blob
 
-The `content-ops` example demonstrates file-backed memory.
+The `content-ops` example now demonstrates SQLite-backed memory.
 
 ## Human approval checkpoints
 

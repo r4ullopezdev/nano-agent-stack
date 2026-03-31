@@ -6,139 +6,484 @@
     <title>Run Inspector</title>
     <style>
       :root {
-        color-scheme: light;
-        --bg: #f3efe7;
-        --panel: #fffdf8;
-        --ink: #1f2722;
-        --muted: #68756c;
-        --accent: #0c6b58;
-        --line: #d7d0c4;
+        color-scheme: dark;
+        --bg: #07111c;
+        --panel: rgba(12, 22, 36, 0.92);
+        --panel-strong: #0d1a2b;
+        --ink: #eef5ff;
+        --muted: #89a0bb;
+        --accent: #7dd3fc;
+        --accent-2: #6ee7b7;
+        --warn: #fbbf24;
+        --error: #f87171;
+        --line: rgba(146, 177, 213, 0.18);
       }
       body {
         margin: 0;
-        font-family: "Segoe UI", sans-serif;
-        background: radial-gradient(circle at top, #fff8e8, var(--bg));
+        font-family: Inter, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(125, 211, 252, 0.14), transparent 28%),
+          radial-gradient(circle at top right, rgba(110, 231, 183, 0.09), transparent 24%),
+          linear-gradient(180deg, #08101a 0%, var(--bg) 100%);
         color: var(--ink);
       }
       main {
-        max-width: 1100px;
+        max-width: 1240px;
         margin: 0 auto;
-        padding: 32px 20px 60px;
+        padding: 36px 20px 72px;
       }
-      .hero, .grid > section {
+      .hero, .grid > section, .subgrid > section {
         background: var(--panel);
         border: 1px solid var(--line);
-        border-radius: 18px;
-        box-shadow: 0 18px 50px rgba(35, 38, 31, 0.08);
+        border-radius: 24px;
+        box-shadow: 0 20px 80px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(18px);
       }
       .hero {
-        padding: 28px;
-        margin-bottom: 20px;
+        padding: 32px;
+        margin-bottom: 22px;
       }
-      h1, h2 { margin: 0 0 12px; }
-      .muted { color: var(--muted); }
+      h1, h2 {
+        margin: 0 0 12px;
+      }
+      p {
+        margin: 0;
+      }
+      .muted {
+        color: var(--muted);
+      }
       .grid {
         display: grid;
-        grid-template-columns: 320px 1fr;
-        gap: 20px;
+        grid-template-columns: 360px 1fr;
+        gap: 22px;
       }
-      .stats, .timeline {
+      .subgrid {
+        display: grid;
+        gap: 22px;
+      }
+      .stats, .timeline, .breakdown {
         padding: 24px;
       }
-      .stat {
-        padding: 12px 0;
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 24px;
+        align-items: start;
+      }
+      .hero-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        color: var(--accent);
+        background: rgba(125, 211, 252, 0.08);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .hero-copy p {
+        line-height: 1.7;
+      }
+      .hero-kpis {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .kpi, .stat {
+        padding: 14px 0;
         border-bottom: 1px solid var(--line);
       }
+      .kpi:last-child, .stat:last-child {
+        border-bottom: 0;
+      }
+      .kpi strong, .stat strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        background: rgba(110, 231, 183, 0.1);
+        color: var(--accent-2);
+      }
+      .status.failed {
+        background: rgba(248, 113, 113, 0.12);
+        color: var(--error);
+      }
+      .status.running {
+        background: rgba(251, 191, 36, 0.12);
+        color: var(--warn);
+      }
+      .section-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      .breakdown-list {
+        display: grid;
+        gap: 12px;
+      }
+      .breakdown-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: center;
+      }
+      .breakdown-label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .bar {
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+      }
+      .bar > span {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      }
+      .timeline {
+        padding-bottom: 10px;
+      }
       .event-card {
+        display: grid;
+        grid-template-columns: 54px 1fr;
+        gap: 14px;
         padding: 16px;
         border: 1px solid var(--line);
-        border-radius: 14px;
+        border-radius: 18px;
         margin-bottom: 14px;
-        background: #fff;
+        background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      }
+      .event-card.level-warn {
+        border-color: rgba(251, 191, 36, 0.28);
+      }
+      .event-card.level-error {
+        border-color: rgba(248, 113, 113, 0.28);
+      }
+      .event-index {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: var(--panel-strong);
+        border: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .event-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
       }
       .event-type {
         display: inline-block;
         padding: 4px 8px;
         border-radius: 999px;
-        background: #dff3ec;
+        background: rgba(125, 211, 252, 0.1);
         color: var(--accent);
         font-size: 12px;
         font-weight: 700;
       }
-      .event-meta {
+      .event-meta, time {
         margin-top: 10px;
         color: var(--muted);
         font-size: 14px;
       }
+      .event-body p {
+        margin-top: 12px;
+        line-height: 1.7;
+      }
+      pre {
+        margin: 12px 0 0;
+        padding: 14px;
+        border-radius: 14px;
+        background: #081321;
+        border: 1px solid var(--line);
+        color: #cce5ff;
+        overflow: auto;
+        font-size: 12px;
+        line-height: 1.6;
+      }
+      @media (max-width: 1024px) {
+        .hero-grid, .grid {
+          grid-template-columns: 1fr;
+        }
+      }
       @media (max-width: 900px) {
-        .grid { grid-template-columns: 1fr; }
+        .hero-kpis {
+          grid-template-columns: 1fr;
+        }
+        .event-card {
+          grid-template-columns: 1fr;
+        }
+        .event-index {
+          width: 36px;
+          height: 36px;
+        }
       }
     </style>
   </head>
   <body>
     <main>
       <section class="hero">
-        <h1>support-triage-demo</h1>
-        <p class="muted">Run support-triage-demo-2026-03-31T12-20-36-581Z · completed</p>
-        <p>This inspector is intentionally minimal: it makes run status, actor flow, and event chronology immediately visible without needing enterprise observability tooling.</p>
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="badge">Run Inspector</div>
+            <div>
+              <h1>content-ops-demo</h1>
+              <p class="muted">Run content-ops-demo-2026-03-31T12-31-23-966Z</p>
+            </div>
+            <p>This inspector stays intentionally lightweight, but it now makes status, actor flow, approval pressure, and event chronology visible enough to debug multi-agent runs without requiring enterprise tooling.</p>
+          </div>
+          <div class="hero-kpis">
+            <div class="kpi">
+              <strong>Status</strong>
+              <span class="status completed">completed</span>
+            </div>
+            <div class="kpi">
+              <strong>Duration</strong>
+              <span>4 ms</span>
+            </div>
+            <div class="kpi">
+              <strong>Approval events</strong>
+              <span>0</span>
+            </div>
+            <div class="kpi">
+              <strong>Error events</strong>
+              <span>0</span>
+            </div>
+          </div>
+        </div>
       </section>
       <div class="grid">
-        <section class="stats">
-          <h2>Run Metadata</h2>
-          <div class="stat"><strong>Started</strong><br />2026-03-31T12:20:36.579Z</div>
-          <div class="stat"><strong>Finished</strong><br />2026-03-31T12:20:36.581Z</div>
-          <div class="stat"><strong>Events</strong><br />8</div>
-          <div class="stat"><strong>Status</strong><br />completed</div>
-        </section>
+        <div class="subgrid">
+          <section class="stats">
+            <div class="section-title">
+              <h2>Run Metadata</h2>
+            </div>
+            <div class="stat"><strong>Started</strong><br />2026-03-31T12:31:23.962Z</div>
+            <div class="stat"><strong>Finished</strong><br />2026-03-31T12:31:23.966Z</div>
+            <div class="stat"><strong>Events</strong><br />6</div>
+            <div class="stat"><strong>Distinct actors</strong><br />4</div>
+          </section>
+          <section class="breakdown">
+            <div class="section-title">
+              <h2>Event Breakdown</h2>
+            </div>
+            <div class="breakdown-list">
+              
+        <div class="breakdown-row">
+          <div class="breakdown-label">
+            <strong>skill.invoked</strong>
+            <div class="bar"><span style="width:33.33333333333333%"></span></div>
+          </div>
+          <span>2</span>
+        </div>
+      
+        <div class="breakdown-row">
+          <div class="breakdown-label">
+            <strong>run.started</strong>
+            <div class="bar"><span style="width:16.666666666666664%"></span></div>
+          </div>
+          <span>1</span>
+        </div>
+      
+        <div class="breakdown-row">
+          <div class="breakdown-label">
+            <strong>task.started</strong>
+            <div class="bar"><span style="width:16.666666666666664%"></span></div>
+          </div>
+          <span>1</span>
+        </div>
+      
+        <div class="breakdown-row">
+          <div class="breakdown-label">
+            <strong>task.completed</strong>
+            <div class="bar"><span style="width:16.666666666666664%"></span></div>
+          </div>
+          <span>1</span>
+        </div>
+      
+        <div class="breakdown-row">
+          <div class="breakdown-label">
+            <strong>run.completed</strong>
+            <div class="bar"><span style="width:16.666666666666664%"></span></div>
+          </div>
+          <span>1</span>
+        </div>
+      
+            </div>
+          </section>
+          <section class="breakdown">
+            <div class="section-title">
+              <h2>Actor Map</h2>
+            </div>
+            <div class="breakdown-list">
+              
+        <div class="breakdown-row">
+          <div class="breakdown-label">
+            <strong>orchestrator</strong>
+            <div class="bar"><span style="width:33.33333333333333%"></span></div>
+          </div>
+          <span>2</span>
+        </div>
+      
+        <div class="breakdown-row">
+          <div class="breakdown-label">
+            <strong>content-manager</strong>
+            <div class="bar"><span style="width:33.33333333333333%"></span></div>
+          </div>
+          <span>2</span>
+        </div>
+      
+        <div class="breakdown-row">
+          <div class="breakdown-label">
+            <strong>content-researcher</strong>
+            <div class="bar"><span style="width:16.666666666666664%"></span></div>
+          </div>
+          <span>1</span>
+        </div>
+      
+        <div class="breakdown-row">
+          <div class="breakdown-label">
+            <strong>content-writer</strong>
+            <div class="bar"><span style="width:16.666666666666664%"></span></div>
+          </div>
+          <span>1</span>
+        </div>
+      
+            </div>
+          </section>
+          <section class="breakdown">
+            <div class="section-title">
+              <h2>Signal Levels</h2>
+            </div>
+            <div class="breakdown-list">
+              
+        <div class="breakdown-row">
+          <div class="breakdown-label">
+            <strong>info</strong>
+            <div class="bar"><span style="width:100%"></span></div>
+          </div>
+          <span>6</span>
+        </div>
+      
+            </div>
+          </section>
+        </div>
         <section class="timeline">
-          <h2>Event Timeline</h2>
+          <div class="section-title">
+            <h2>Event Timeline</h2>
+            <span class="muted">6 events</span>
+          </div>
           
-        <article class="event-card">
-          <div class="event-type">run.started</div>
-          <div class="event-meta">orchestrator · info</div>
-          <p>Starting workflow 'support-triage-demo'.</p>
+        <article class="event-card level-info">
+          <div class="event-index">01</div>
+          <div class="event-body">
+            <div class="event-header">
+              <div class="event-type">run.started</div>
+              <time>2026-03-31T12:31:23.966Z</time>
+            </div>
+            <div class="event-meta">orchestrator &middot; info</div>
+            <p>Starting workflow &#39;content-ops-demo&#39;.</p>
+            
+          </div>
         </article>
       
-        <article class="event-card">
-          <div class="event-type">task.started</div>
-          <div class="event-meta">support-manager · info</div>
-          <p>Manager 'Support Triage Manager' accepted task 'Triage a high-priority support queue'.</p>
+        <article class="event-card level-info">
+          <div class="event-index">02</div>
+          <div class="event-body">
+            <div class="event-header">
+              <div class="event-type">task.started</div>
+              <time>2026-03-31T12:31:23.966Z</time>
+            </div>
+            <div class="event-meta">content-manager &middot; info</div>
+            <p>Manager &#39;Content Operations Manager&#39; accepted task &#39;Create an editorial brief for a multi-agent architecture article&#39;.</p>
+            <pre>{
+  &quot;provider&quot;: &quot;static-scenario&quot;
+}</pre>
+          </div>
         </article>
       
-        <article class="event-card">
-          <div class="event-type">approval.requested</div>
-          <div class="event-meta">support-manager · info</div>
-          <p>Human review required before customer-facing response</p>
+        <article class="event-card level-info">
+          <div class="event-index">03</div>
+          <div class="event-body">
+            <div class="event-header">
+              <div class="event-type">skill.invoked</div>
+              <time>2026-03-31T12:31:23.966Z</time>
+            </div>
+            <div class="event-meta">content-researcher &middot; info</div>
+            <p>Invoking skill &#39;web-research-stub&#39; for &#39;Create an editorial brief for a multi-agent architecture article&#39;.</p>
+            
+          </div>
         </article>
       
-        <article class="event-card">
-          <div class="event-type">approval.approved</div>
-          <div class="event-meta">support-reviewer · info</div>
-          <p>Automatically approved from CLI flag.</p>
+        <article class="event-card level-info">
+          <div class="event-index">04</div>
+          <div class="event-body">
+            <div class="event-header">
+              <div class="event-type">skill.invoked</div>
+              <time>2026-03-31T12:31:23.966Z</time>
+            </div>
+            <div class="event-meta">content-writer &middot; info</div>
+            <p>Invoking skill &#39;markdown-report-generator&#39; for &#39;Create an editorial brief for a multi-agent architecture article&#39;.</p>
+            
+          </div>
         </article>
       
-        <article class="event-card">
-          <div class="event-type">skill.invoked</div>
-          <div class="event-meta">classifier · info</div>
-          <p>Invoking skill 'task-classifier' for 'Triage a high-priority support queue'.</p>
+        <article class="event-card level-info">
+          <div class="event-index">05</div>
+          <div class="event-body">
+            <div class="event-header">
+              <div class="event-type">task.completed</div>
+              <time>2026-03-31T12:31:23.966Z</time>
+            </div>
+            <div class="event-meta">content-manager &middot; info</div>
+            <p>Task &#39;Create an editorial brief for a multi-agent architecture article&#39; completed.</p>
+            <pre>{
+  &quot;workerCount&quot;: 2,
+  &quot;status&quot;: &quot;completed&quot;
+}</pre>
+          </div>
         </article>
       
-        <article class="event-card">
-          <div class="event-type">skill.invoked</div>
-          <div class="event-meta">formatter · info</div>
-          <p>Invoking skill 'structured-output-formatter' for 'Triage a high-priority support queue'.</p>
-        </article>
-      
-        <article class="event-card">
-          <div class="event-type">task.completed</div>
-          <div class="event-meta">support-manager · info</div>
-          <p>Task 'Triage a high-priority support queue' completed.</p>
-        </article>
-      
-        <article class="event-card">
-          <div class="event-type">run.completed</div>
-          <div class="event-meta">orchestrator · info</div>
-          <p>Completed workflow 'support-triage-demo'.</p>
+        <article class="event-card level-info">
+          <div class="event-index">06</div>
+          <div class="event-body">
+            <div class="event-header">
+              <div class="event-type">run.completed</div>
+              <time>2026-03-31T12:31:23.966Z</time>
+            </div>
+            <div class="event-meta">orchestrator &middot; info</div>
+            <p>Completed workflow &#39;content-ops-demo&#39;.</p>
+            <pre>{
+  &quot;resultCount&quot;: 1
+}</pre>
+          </div>
         </article>
       
         </section>

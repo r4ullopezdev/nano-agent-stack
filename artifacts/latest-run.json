@@ -1,78 +1,58 @@
 {
-  "runId": "support-triage-demo-2026-03-31T12-20-36-581Z",
-  "workflow": "support-triage-demo",
-  "startedAt": "2026-03-31T12:20:36.579Z",
-  "finishedAt": "2026-03-31T12:20:36.581Z",
+  "runId": "content-ops-demo-2026-03-31T12-31-23-966Z",
+  "workflow": "content-ops-demo",
+  "startedAt": "2026-03-31T12:31:23.962Z",
+  "finishedAt": "2026-03-31T12:31:23.966Z",
   "status": "completed",
   "events": [
     {
-      "at": "2026-03-31T12:20:36.581Z",
+      "at": "2026-03-31T12:31:23.966Z",
       "level": "info",
       "type": "run.started",
       "actor": "orchestrator",
-      "detail": "Starting workflow 'support-triage-demo'."
+      "detail": "Starting workflow 'content-ops-demo'."
     },
     {
-      "at": "2026-03-31T12:20:36.581Z",
+      "at": "2026-03-31T12:31:23.966Z",
       "level": "info",
       "type": "task.started",
-      "actor": "support-manager",
-      "detail": "Manager 'Support Triage Manager' accepted task 'Triage a high-priority support queue'.",
+      "actor": "content-manager",
+      "detail": "Manager 'Content Operations Manager' accepted task 'Create an editorial brief for a multi-agent architecture article'.",
       "metadata": {
-        "provider": "echo"
+        "provider": "static-scenario"
       }
     },
     {
-      "at": "2026-03-31T12:20:36.581Z",
-      "level": "info",
-      "type": "approval.requested",
-      "actor": "support-manager",
-      "detail": "Human review required before customer-facing response",
-      "metadata": {
-        "checkpoint": "Human review required before customer-facing response"
-      }
-    },
-    {
-      "at": "2026-03-31T12:20:36.581Z",
-      "level": "info",
-      "type": "approval.approved",
-      "actor": "support-reviewer",
-      "detail": "Automatically approved from CLI flag.",
-      "metadata": {
-        "checkpoint": "Human review required before customer-facing response"
-      }
-    },
-    {
-      "at": "2026-03-31T12:20:36.581Z",
+      "at": "2026-03-31T12:31:23.966Z",
       "level": "info",
       "type": "skill.invoked",
-      "actor": "classifier",
-      "detail": "Invoking skill 'task-classifier' for 'Triage a high-priority support queue'."
+      "actor": "content-researcher",
+      "detail": "Invoking skill 'web-research-stub' for 'Create an editorial brief for a multi-agent architecture article'."
     },
     {
-      "at": "2026-03-31T12:20:36.581Z",
+      "at": "2026-03-31T12:31:23.966Z",
       "level": "info",
       "type": "skill.invoked",
-      "actor": "formatter",
-      "detail": "Invoking skill 'structured-output-formatter' for 'Triage a high-priority support queue'."
+      "actor": "content-writer",
+      "detail": "Invoking skill 'markdown-report-generator' for 'Create an editorial brief for a multi-agent architecture article'."
     },
     {
-      "at": "2026-03-31T12:20:36.581Z",
+      "at": "2026-03-31T12:31:23.966Z",
       "level": "info",
       "type": "task.completed",
-      "actor": "support-manager",
-      "detail": "Task 'Triage a high-priority support queue' completed.",
+      "actor": "content-manager",
+      "detail": "Task 'Create an editorial brief for a multi-agent architecture article' completed.",
       "metadata": {
         "workerCount": 2,
         "status": "completed"
       }
     },
     {
-      "at": "2026-03-31T12:20:36.581Z",
+      "at": "2026-03-31T12:31:23.966Z",
       "level": "info",
       "type": "run.completed",
       "actor": "orchestrator",
-      "detail": "Completed workflow 'support-triage-demo'.",
+      "detail": "Completed workflow 'content-ops-demo'.",
       "metadata": {
         "resultCount": 1
       }

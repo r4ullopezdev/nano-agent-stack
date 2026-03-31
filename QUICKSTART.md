@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Node.js 20+
+- Node.js 22+
 
 ## Install
 
@@ -82,4 +82,4 @@ The demo prints a markdown execution report and writes:
 - `artifacts/latest-trace.md`
 - `artifacts/latest-run-inspector.html`
 
-When file memory is configured, additional persisted state files are written under `artifacts/`.
+When file or SQLite memory is configured, additional persisted state files are written under `artifacts/`.

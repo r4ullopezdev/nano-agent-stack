@@ -13,10 +13,12 @@ const runtimeConfigSchema = z.object({
   }),
   memory: z
     .object({
-      kind: z.enum(["in-memory", "file"]),
+      kind: z.enum(["in-memory", "file", "sqlite"]),
       options: z
         .object({
-          filePath: z.string().min(1).optional()
+          filePath: z.string().min(1).optional(),
+          dbPath: z.string().min(1).optional(),
+          tableName: z.string().min(1).optional()
         })
         .optional()
     })

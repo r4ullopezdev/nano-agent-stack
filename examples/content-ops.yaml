@@ -3,9 +3,9 @@ provider:
   kind: static-scenario
   model: local-scenario-v1
 memory:
-  kind: file
+  kind: sqlite
   options:
-    filePath: artifacts/content-ops-memory.json
+    dbPath: artifacts/content-ops-memory.sqlite
 policy:
   maxTasksPerRun: 4
   humanApprovalRequired: false
