@@ -2,6 +2,8 @@ import { RunTracer } from "../observability/tracer.js";
 import type { GenerationProvider } from "../providers/provider.js";
 import type {
   AgentDefinition,
+  ApprovalDecision,
+  ApprovalHandler,
   DepartmentDefinition,
   MemoryAdapter,
   RunResult,
@@ -16,6 +18,7 @@ type RuntimeDependencies = {
   skills: SkillRegistry;
   memory: MemoryAdapter;
   provider: GenerationProvider;
+  approval?: ApprovalHandler;
 };
 
 export class Orchestrator {
@@ -25,6 +28,7 @@ export class Orchestrator {
 
   async run(): Promise<RunResult> {
     const { config } = this.deps;
+    const approvals: ApprovalDecision[] = [];
 
     this.tracer.record({
       type: "run.started",
@@ -38,7 +42,11 @@ export class Orchestrator {
 
     const results: TaskResult[] = [];
     for (const task of config.tasks) {
-      results.push(await this.executeTask(task));
+      const result = await this.executeTask(task);
+      if (result.approval) {
+        approvals.push(result.approval);
+      }
+      results.push(result);
     }
 
     this.tracer.record({
@@ -51,7 +59,8 @@ export class Orchestrator {
     return {
       workflow: config.name,
       results,
-      trace: this.tracer.list()
+      trace: this.tracer.list(),
+      approvals
     };
   }
 
@@ -95,13 +104,54 @@ export class Orchestrator {
       payload: { provider: this.deps.provider.id }
     });
 
+    let approval: ApprovalDecision | undefined;
     if (task.checkpoint && this.deps.config.policy.humanApprovalRequired) {
       this.tracer.record({
-        type: "approval.checkpoint",
+        type: "approval.requested",
         actor: manager.id,
         taskId: task.id,
-        detail: task.checkpoint
+        detail: task.checkpoint,
+        payload: { checkpoint: task.checkpoint }
       });
+
+      approval = await this.requestApproval(task, department.label, managerBrief.content);
+      this.tracer.record({
+        type: approval.approved ? "approval.approved" : "approval.rejected",
+        actor: approval.reviewer,
+        taskId: task.id,
+        detail: approval.reason ?? task.checkpoint,
+        payload: { checkpoint: approval.checkpoint }
+      });
+
+      if (!approval.approved) {
+        const finalSummary = `Task '${task.title}' was blocked at human checkpoint '${task.checkpoint}'.`;
+
+        await this.deps.memory.write({
+          scope: task.ownerDepartment,
+          key: `${task.id}:approval`,
+          value: approval
+        });
+
+        this.tracer.record({
+          type: "task.completed",
+          actor: manager.id,
+          taskId: task.id,
+          detail: `Task '${task.title}' blocked after rejection.`,
+          payload: { workerCount: 0, status: "blocked" }
+        });
+
+        return {
+          taskId: task.id,
+          ownerDepartment: task.ownerDepartment,
+          manager: manager.id,
+          provider: this.deps.provider.model,
+          status: "blocked",
+          managerBrief: managerBrief.content,
+          workerOutputs: [],
+          finalSummary,
+          approval
+        };
+      }
     }
 
     const workerIds =
@@ -164,12 +214,20 @@ export class Orchestrator {
       value: finalSummary
     });
 
+    if (approval) {
+      await this.deps.memory.write({
+        scope: task.ownerDepartment,
+        key: `${task.id}:approval`,
+        value: approval
+      });
+    }
+
     this.tracer.record({
       type: "task.completed",
       actor: manager.id,
       taskId: task.id,
       detail: `Task '${task.title}' completed.`,
-      payload: { workerCount: workerOutputs.length }
+      payload: { workerCount: workerOutputs.length, status: "completed" }
     });
 
     return {
@@ -177,9 +235,26 @@ export class Orchestrator {
       ownerDepartment: task.ownerDepartment,
       manager: manager.id,
       provider: this.deps.provider.model,
+      status: "completed",
       managerBrief: managerBrief.content,
       workerOutputs,
-      finalSummary
+      finalSummary,
+      approval
     };
+  }
+
+  private async requestApproval(task: WorkflowTask, departmentLabel: string, managerBrief: string): Promise<ApprovalDecision> {
+    if (!this.deps.approval) {
+      throw new Error("Workflow requires human approval, but no approval handler is configured.");
+    }
+
+    return this.deps.approval.requestApproval({
+      workflow: this.deps.config.name,
+      taskId: task.id,
+      taskTitle: task.title,
+      department: departmentLabel,
+      checkpoint: task.checkpoint ?? "Human approval required",
+      managerBrief
+    });
   }
 }

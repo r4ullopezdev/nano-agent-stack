@@ -78,16 +78,16 @@
   <body>
     <main>
       <section class="hero">
-        <h1>content-ops-demo</h1>
-        <p class="muted">Run content-ops-demo-2026-03-30T07-29-42-764Z · completed</p>
+        <h1>support-triage-demo</h1>
+        <p class="muted">Run support-triage-demo-2026-03-31T12-20-36-581Z · completed</p>
         <p>This inspector is intentionally minimal: it makes run status, actor flow, and event chronology immediately visible without needing enterprise observability tooling.</p>
       </section>
       <div class="grid">
         <section class="stats">
           <h2>Run Metadata</h2>
-          <div class="stat"><strong>Started</strong><br />2026-03-30T07:29:42.760Z</div>
-          <div class="stat"><strong>Finished</strong><br />2026-03-30T07:29:42.764Z</div>
-          <div class="stat"><strong>Events</strong><br />6</div>
+          <div class="stat"><strong>Started</strong><br />2026-03-31T12:20:36.579Z</div>
+          <div class="stat"><strong>Finished</strong><br />2026-03-31T12:20:36.581Z</div>
+          <div class="stat"><strong>Events</strong><br />8</div>
           <div class="stat"><strong>Status</strong><br />completed</div>
         </section>
         <section class="timeline">
@@ -96,37 +96,49 @@
         <article class="event-card">
           <div class="event-type">run.started</div>
           <div class="event-meta">orchestrator · info</div>
-          <p>Starting workflow 'content-ops-demo'.</p>
+          <p>Starting workflow 'support-triage-demo'.</p>
         </article>
       
         <article class="event-card">
           <div class="event-type">task.started</div>
-          <div class="event-meta">content-manager · info</div>
-          <p>Manager 'Content Operations Manager' accepted task 'Create an editorial brief for a multi-agent architecture article'.</p>
+          <div class="event-meta">support-manager · info</div>
+          <p>Manager 'Support Triage Manager' accepted task 'Triage a high-priority support queue'.</p>
+        </article>
+      
+        <article class="event-card">
+          <div class="event-type">approval.requested</div>
+          <div class="event-meta">support-manager · info</div>
+          <p>Human review required before customer-facing response</p>
+        </article>
+      
+        <article class="event-card">
+          <div class="event-type">approval.approved</div>
+          <div class="event-meta">support-reviewer · info</div>
+          <p>Automatically approved from CLI flag.</p>
         </article>
       
         <article class="event-card">
           <div class="event-type">skill.invoked</div>
-          <div class="event-meta">content-researcher · info</div>
-          <p>Invoking skill 'web-research-stub' for 'Create an editorial brief for a multi-agent architecture article'.</p>
+          <div class="event-meta">classifier · info</div>
+          <p>Invoking skill 'task-classifier' for 'Triage a high-priority support queue'.</p>
         </article>
       
         <article class="event-card">
           <div class="event-type">skill.invoked</div>
-          <div class="event-meta">content-writer · info</div>
-          <p>Invoking skill 'markdown-report-generator' for 'Create an editorial brief for a multi-agent architecture article'.</p>
+          <div class="event-meta">formatter · info</div>
+          <p>Invoking skill 'structured-output-formatter' for 'Triage a high-priority support queue'.</p>
         </article>
       
         <article class="event-card">
           <div class="event-type">task.completed</div>
-          <div class="event-meta">content-manager · info</div>
-          <p>Task 'Create an editorial brief for a multi-agent architecture article' completed.</p>
+          <div class="event-meta">support-manager · info</div>
+          <p>Task 'Triage a high-priority support queue' completed.</p>
         </article>
       
         <article class="event-card">
           <div class="event-type">run.completed</div>
           <div class="event-meta">orchestrator · info</div>
-          <p>Completed workflow 'content-ops-demo'.</p>
+          <p>Completed workflow 'support-triage-demo'.</p>
         </article>
       
         </section>

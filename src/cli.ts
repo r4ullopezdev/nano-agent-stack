@@ -9,6 +9,7 @@ import {
 } from "nano-agent-observability";
 import { demoSkills, SkillRegistry } from "nano-agent-skills";
 import { catalog } from "nano-agent-templates";
+import { loadApprovalHandler } from "./approval/loadApprovalHandler.js";
 import { loadConfig } from "./config.js";
 import { loadMemoryAdapter } from "./memory/loadMemoryAdapter.js";
 import { toRunRecord } from "./observability/toRunRecord.js";
@@ -17,7 +18,13 @@ import { loadProvider } from "./providers/loadProvider.js";
 import { renderRunReport } from "./report.js";
 
 async function main(): Promise<void> {
-  const [, , command = "run", configPath = "examples/ceo-launch.yaml"] = process.argv;
+  const [, , command = "run", configPath = "examples/ceo-launch.yaml", ...flagArgs] = process.argv;
+  const flags = {
+    autoApprove: flagArgs.includes("--auto-approve"),
+    autoReject: flagArgs.includes("--auto-reject"),
+    reviewer: readFlagValue(flagArgs, "--reviewer"),
+    approvalReason: readFlagValue(flagArgs, "--approval-reason")
+  };
 
   if (command === "templates") {
     catalog.forEach((template) => {
@@ -42,12 +49,14 @@ async function main(): Promise<void> {
   demoSkills.forEach((skill) => registry.register(skill));
   const provider = loadProvider(config.provider);
   const memory = loadMemoryAdapter(config.memory);
+  const approval = loadApprovalHandler(config, flags);
 
   const orchestrator = new Orchestrator({
     config,
     skills: registry,
     memory,
-    provider
+    provider,
+    approval
   });
 
   const result = await orchestrator.run();
@@ -68,6 +77,20 @@ async function main(): Promise<void> {
   console.log(chalk.green(`Saved trace to ${tracePath}`));
   console.log(chalk.green(`Saved trace markdown to ${traceMarkdownPath}`));
   console.log(chalk.green(`Saved inspector to ${inspectorPath}`));
+}
+
+function readFlagValue(args: string[], flag: string): string | undefined {
+  const directMatch = args.find((entry) => entry.startsWith(`${flag}=`));
+  if (directMatch) {
+    return directMatch.slice(flag.length + 1);
+  }
+
+  const flagIndex = args.indexOf(flag);
+  if (flagIndex >= 0) {
+    return args[flagIndex + 1];
+  }
+
+  return undefined;
 }
 
 main().catch((error) => {

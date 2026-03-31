@@ -30,9 +30,11 @@ This project takes a different position:
 - real dependency on `nano-agent-skills` for the skill registry
 - validated workflow configuration loading
 - in-memory and file-backed memory adapters
+- real human approval checkpoints that can gate task execution
 - explicit provider abstraction for generation backends
+- experimental end-to-end providers for OpenAI Responses and Anthropic Messages
 - trace collection for every run
-- optional human approval checkpoints
+- CLI-level template discovery and workflow validation
 - CLI demo for CEO -> department manager -> workers
 
 ## Architecture
@@ -58,6 +60,8 @@ npm install
 npm run demo
 npm run demo:content
 npm run demo:support
+npm run demo:openai
+npm run demo:anthropic
 npm run validate:demo
 npm run templates
 ```
@@ -66,7 +70,7 @@ Expected result:
 
 - a terminal report of the workflow run
 - generated artifacts at `artifacts/latest-run.md`, `artifacts/latest-run.json`, `artifacts/latest-trace.md`, and `artifacts/latest-run-inspector.html`
-- a trace showing task routing, skill calls, and approval checkpoints
+- a trace showing task routing, skill calls, and approval decisions
 - optional file-backed workflow memory when configured
 
 For a fuller setup path, see [QUICKSTART.md](./QUICKSTART.md).
@@ -91,6 +95,7 @@ Additional examples:
 - `examples/content-ops.yaml`
 - `examples/support-triage.yaml`
 - `examples/experimental-openai.yaml`
+- `examples/experimental-anthropic.yaml`
 
 ## Provider abstraction
 
@@ -125,6 +130,29 @@ The runtime now supports:
 - `file`: simple persisted state for local runs and repeatable examples
 
 The `content-ops` example demonstrates file-backed memory.
+
+## Human approval checkpoints
+
+Approval checkpoints now gate execution instead of only emitting traces.
+
+- interactive runs prompt a reviewer in the terminal
+- CI and demos can use `--auto-approve` or `--auto-reject`
+- approval decisions are written into the run trace and included in the markdown report
+
+For scripted review control:
+
+```bash
+tsx src/cli.ts run examples/ceo-launch.yaml --auto-reject --reviewer qa-lead --approval-reason "Needs revision"
+```
+
+## Experimental providers
+
+The remote providers remain explicitly experimental, but the integration is now exercised end-to-end at the package level:
+
+- `openai-responses`
+- `anthropic-messages`
+
+Both providers now use a shared HTTP provider layer, typed response parsing, example configs, and integration-style tests with injected fetchers.
 
 ## Template bridge
 

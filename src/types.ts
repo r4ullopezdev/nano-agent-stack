@@ -71,6 +71,28 @@ export type WorkflowTask = {
   checkpoint?: string;
 };
 
+export type ApprovalRequest = {
+  workflow: string;
+  taskId: string;
+  taskTitle: string;
+  department: string;
+  checkpoint: string;
+  managerBrief: string;
+};
+
+export type ApprovalDecision = {
+  taskId: string;
+  checkpoint: string;
+  approved: boolean;
+  reviewer: string;
+  reason?: string;
+  at: string;
+};
+
+export type ApprovalHandler = {
+  requestApproval(request: ApprovalRequest): Promise<ApprovalDecision>;
+};
+
 export type RuntimeConfig = {
   name: string;
   provider: ProviderConfig;
@@ -89,7 +111,9 @@ export type TraceEvent = {
     | "task.started"
     | "task.completed"
     | "skill.invoked"
-    | "approval.checkpoint";
+    | "approval.requested"
+    | "approval.approved"
+    | "approval.rejected";
   actor: string;
   taskId?: string;
   detail: string;
@@ -101,6 +125,7 @@ export type TaskResult = {
   ownerDepartment: string;
   manager: string;
   provider: string;
+  status: "completed" | "blocked";
   managerBrief: string;
   workerOutputs: Array<{
     workerId: string;
@@ -109,10 +134,12 @@ export type TaskResult = {
     providerNote: string;
   }>;
   finalSummary: string;
+  approval?: ApprovalDecision;
 };
 
 export type RunResult = {
   workflow: string;
   results: TaskResult[];
   trace: TraceEvent[];
+  approvals: ApprovalDecision[];
 };

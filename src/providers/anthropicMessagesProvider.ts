@@ -1,10 +1,13 @@
 import { getRequiredEnv } from "./env.js";
+import { HttpGenerationProvider, type HttpFetcher } from "./httpGenerationProvider.js";
+import { buildProviderPrompt } from "./prompt.js";
 import type { GenerationProvider, ProviderRequest, ProviderResponse } from "./provider.js";
 
 type AnthropicOptions = {
   apiKeyEnv?: string;
   baseUrl?: string;
   maxTokens?: number;
+  fetcher?: HttpFetcher;
 };
 
 export class AnthropicMessagesProvider implements GenerationProvider {
@@ -18,45 +21,35 @@ export class AnthropicMessagesProvider implements GenerationProvider {
   async generate(request: ProviderRequest): Promise<ProviderResponse> {
     const apiKey = getRequiredEnv(this.options.apiKeyEnv ?? "ANTHROPIC_API_KEY");
     const baseUrl = this.options.baseUrl ?? "https://api.anthropic.com/v1";
-    const prompt = [
-      `Role: ${request.role}`,
-      `Task: ${request.task}`,
-      `Objective: ${request.objective}`,
-      `Context: ${JSON.stringify(request.context)}`
-    ].join("\n");
-
-    const response = await fetch(`${baseUrl}/messages`, {
-      method: "POST",
+    const provider = new HttpGenerationProvider<{
+      content?: Array<{ type: string; text?: string }>;
+    }>({
+      providerId: this.id,
+      model: this.model,
+      baseUrl,
+      endpoint: "/messages",
       headers: {
-        "Content-Type": "application/json",
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01"
       },
-      body: JSON.stringify({
+      body: () => ({
         model: this.model,
         max_tokens: this.options.maxTokens ?? 300,
         messages: [
           {
             role: "user",
-            content: prompt
+            content: buildProviderPrompt(request)
           }
         ]
-      })
+      }),
+      parseResponse: (json) => ({
+        content:
+          json.content?.find((entry) => entry.type === "text")?.text ??
+          "No text block returned by Anthropic messages API."
+      }),
+      fetcher: this.options.fetcher
     });
 
-    if (!response.ok) {
-      throw new Error(`Anthropic provider request failed with status ${response.status}.`);
-    }
-
-    const json = (await response.json()) as {
-      content?: Array<{ type: string; text?: string }>;
-    };
-
-    const text = json.content?.find((entry) => entry.type === "text")?.text;
-
-    return {
-      content: text ?? "No text block returned by Anthropic messages API."
-    };
+    return provider.generate(request);
   }
 }
-

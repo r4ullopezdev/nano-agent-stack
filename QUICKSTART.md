@@ -21,6 +21,8 @@ npm run demo
 ```bash
 npm run demo:content
 npm run demo:support
+npm run demo:openai
+npm run demo:anthropic
 ```
 
 ## Validate a workflow config
@@ -38,6 +40,24 @@ npm run templates
 ## Experimental provider setup
 
 Export `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` before using remote providers. The included `examples/experimental-openai.yaml` shows the expected config shape.
+
+The experimental provider demos use CLI-managed approvals:
+
+```bash
+npm run demo:openai
+npm run demo:anthropic
+```
+
+## Human approval checkpoints
+
+By default, workflows with `humanApprovalRequired: true` will ask for approval in an interactive terminal.
+
+For scripted runs:
+
+```bash
+tsx src/cli.ts run examples/ceo-launch.yaml --auto-approve --reviewer ops-lead
+tsx src/cli.ts run examples/ceo-launch.yaml --auto-reject --reviewer qa-lead --approval-reason "Needs revision"
+```
 
 ## Run a custom config
 
